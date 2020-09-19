@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Test.Models.Customer>
+@{
+    ViewData["Title"] = "Home Page";
+}
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('.alert').fadeOut('fast');
+        }, 2000); // <-- time in milliseconds
+    </script>
+    <script>
+        $(function () {
+            $('.deleteBtn').on('click', function (e, data) {
+                if (!data) {
+                    handleDelete(e, 1);
+                } else {
+                    window.location = $(this).attr('href');
+                }
+            });
+            function handleDelete(e, stop) {
+                if (stop) {
+                    e.preventDefault();
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this Customer again!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Yes, delete!",
+                        closeOnConfirm: false
+                    },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                $(e.target).trigger('click', {});
+                            }
+                        });
+                }
+            };
+
+
+        });
+    </script>
+}
+<div class="container">
+    <div class="row">
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewBag.Success
+            </div>
+        }
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-12 pb-3 mt-3">
+            <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Add">Add New Customer</a>
+        </div>
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Phone</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@item.Id</th>
+                            <td>@item.Name</td>
+                            <td>@item.Address</td>
+                            <td>@item.PhoneNumber</td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-warning" asp-area=""
+                                   asp-controller="Home" asp-action="Edit" asp-route-id="@item.Id">Edite</a>
+
+                                <a class="deleteBtn btn btn-sm btn-outline-danger" asp-area=""
+                                   asp-controller="Home" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
